@@ -1,0 +1,78 @@
+using UnityEngine;
+using System.Collections;
+using Vexe.Runtime.Types;
+using System.Collections.Generic;
+
+namespace {{class_name}}
+{
+    public class Character : BetterBehaviour
+    {
+        private Data _FreshGameData;
+
+        [Default("{{id}}")]
+        public string ID { get; set; }
+
+        //[Inline, OnChanged("CheckNull")]
+        [Inline]
+        public Data GameData { get; set; }
+
+
+        public Data FreshGameData
+        {
+            get
+            {
+                if (_FreshGameData == null)
+                    _FreshGameData = ScriptableObject.CreateInstance<Data>();
+
+                return _FreshGameData;
+            }
+        }
+
+    }
+
+    public class Data : BetterScriptableObject
+    {
+        #region Attributes
+        {{#each attributes}}
+        {{{this}}}
+        {{/each}}
+        #endregion
+
+        #region Unity Editor Logic
+        [UnityEditor.MenuItem("Idler/Test Me")]
+        static void CreateAsset()
+        {
+            var scriptable_object = CreateInstance<{{class_name}}.Data>();
+
+            UnityEditor.AssetDatabase.CreateAsset(scriptable_object, "Assets/{{id}}.asset");
+        }
+        #endregion
+
+        #region Setting Default Values
+        [Show]
+        protected void SetDefaults()
+        {
+            ID = "{{id}}"
+            
+            {{#each values}}
+            {{{this}}}
+            {{/each}}
+    
+            #region Curves
+            {{#each curves}}
+            {{{this}}}
+            {{/each}}
+            #endregion
+        }
+        #endregion
+
+        #region Helpers
+        public Data WithDefaults()
+        {
+            SetDefaults();
+            return this;
+        }
+        #endregion
+    }
+}
+

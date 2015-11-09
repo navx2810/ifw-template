@@ -1,0 +1,51 @@
+using UnityEngine;
+using System.Collections;
+using Vexe.Runtime.Types;
+using IdlerFramework;
+
+namespace GameData
+{
+    public class {{class_name}} : BaseCharacter
+    {
+
+        #region Attributes
+        {{#each attributes}}
+        {{{this}}}
+        {{/each}}
+        #endregion
+
+        [Show]
+        public void SetDefaultValues()
+        {
+            #region Default Values
+            ID = "{{id}}"
+            
+            {{#each values}}
+            {{{this}}}
+            {{/each}}
+            #endregion
+    
+            #region Curves
+            {{#each curves}}
+            {{{this}}}
+            {{/each}}
+            #endregion
+        }
+
+        public void LevelUp()
+        {
+            var max_level = Curves.Count;
+
+            if (CurrentLevel + 1 > max_level)
+                return;
+
+            var notifier_action = Curves[CurrentLevel].Notifier;
+
+            if (notifier_action != null)
+                notifier_action.Invoke();
+
+            CurrentLevel++;
+        }
+        
+    }
+}
